@@ -1,0 +1,18 @@
+{
+  "name": "kadr-spike-fal",
+  "private": true,
+  "type": "module",
+  "description": "Throwaway spike: fal.ai quality/price/latency check with optional Gemini prompt enhancement",
+  "scripts": {
+    "run": "tsx run.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fal-ai/client": "^1.10.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.23.0",
+    "typescript": "^5.9.0"
+  }
+}
