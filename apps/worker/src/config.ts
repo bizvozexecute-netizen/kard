@@ -6,6 +6,9 @@ export const envSchema = z.object({
   LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]).default("info"),
   DATABASE_URL: z.string().url(),
   REDIS_URL: z.string().url(),
+  FAL_KEY: z.string().min(1),
+  GEMINI_KEY: z.string().min(1),
+  GEMINI_MODEL: z.string().min(1).default("gemini-2.5-flash"),
   /** Параллелизм процессора очереди generation */
   WORKER_CONCURRENCY: z.coerce.number().int().min(1).max(64).default(4),
   /** Период cron-сверки ledger, мс (по умолчанию час) */

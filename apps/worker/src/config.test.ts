@@ -4,6 +4,8 @@ import { ConfigValidationError, loadConfig } from "./config";
 const base = {
   DATABASE_URL: "postgresql://kadr:kadr@localhost:5432/kadr",
   REDIS_URL: "redis://localhost:6379",
+  FAL_KEY: "fal-test",
+  GEMINI_KEY: "gemini-test",
 };
 
 describe("worker loadConfig", () => {
@@ -12,12 +14,13 @@ describe("worker loadConfig", () => {
       NODE_ENV: "development",
       LOG_LEVEL: "info",
       ...base,
+      GEMINI_MODEL: "gemini-2.5-flash",
       WORKER_CONCURRENCY: 4,
       LEDGER_RECONCILE_EVERY_MS: 3_600_000,
     });
   });
 
-  it("падает без REDIS_URL и DATABASE_URL, перечисляя обе", () => {
+  it("падает без обязательных переменных, перечисляя их", () => {
     expect(() => loadConfig({})).toThrowError(ConfigValidationError);
     try {
       loadConfig({});
@@ -25,6 +28,8 @@ describe("worker loadConfig", () => {
       expect((err as ConfigValidationError).issues).toEqual([
         "DATABASE_URL: is required",
         "REDIS_URL: is required",
+        "FAL_KEY: is required",
+        "GEMINI_KEY: is required",
       ]);
     }
   });
