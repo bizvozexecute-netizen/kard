@@ -12,6 +12,7 @@ apps/bot        grammY-бот                                  (@kadr/bot)
 packages/shared zod-схемы, типы, коды ошибок               (@kadr/shared)
 packages/db     Prisma-схема, миграции, PrismaClient        (@kadr/db)
 packages/ledger единственная точка изменения кредитов       (@kadr/ledger)
+packages/test-utils Postgres/Redis для интеграционных тестов (@kadr/test-utils)
 spike/          автономный спайк fal.ai (сессия 0), не часть workspace
 ```
 
@@ -30,15 +31,15 @@ curl localhost:3000/v1/health # {"status":"ok","checks":{"postgres":"up","redis"
 
 ## Команды
 
-| Команда                             | Что делает                                                                                                              |
-| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `pnpm dev`                          | api + worker + bot в watch-режиме (turbo)                                                                               |
-| `pnpm build`                        | сборка всех пакетов в `dist/`                                                                                           |
-| `pnpm test`                         | все тесты (Vitest); интеграционным (`@kadr/ledger`) нужен Postgres: `TEST_DATABASE_URL=…` или Docker для Testcontainers |
-| `pnpm lint` / `pnpm typecheck`      | ESLint / `tsc --noEmit` по всем пакетам                                                                                 |
-| `pnpm format` / `pnpm format:check` | Prettier                                                                                                                |
-| `pnpm migrate`                      | `prisma migrate dev` в `packages/db`                                                                                    |
-| `pnpm db:generate`                  | перегенерировать Prisma Client                                                                                          |
+| Команда                             | Что делает                                                                                                                                                        |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm dev`                          | api + worker + bot в watch-режиме (turbo)                                                                                                                         |
+| `pnpm build`                        | сборка всех пакетов в `dist/`                                                                                                                                     |
+| `pnpm test`                         | все тесты (Vitest); интеграционным (`@kadr/ledger`, `@kadr/api`) нужны Postgres и Redis: `TEST_DATABASE_URL=…` и `TEST_REDIS_URL=…` или Docker для Testcontainers |
+| `pnpm lint` / `pnpm typecheck`      | ESLint / `tsc --noEmit` по всем пакетам                                                                                                                           |
+| `pnpm format` / `pnpm format:check` | Prettier                                                                                                                                                          |
+| `pnpm migrate`                      | `prisma migrate dev` в `packages/db`                                                                                                                              |
+| `pnpm db:generate`                  | перегенерировать Prisma Client                                                                                                                                    |
 
 Внутри пакета: `pnpm --filter @kadr/api test`, `pnpm --filter @kadr/db exec prisma studio` и т.д.
 
