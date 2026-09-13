@@ -14,6 +14,22 @@ jobs:
     name: install → lint → build → test
     runs-on: ubuntu-latest
     timeout-minutes: 20
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: kadr
+          POSTGRES_PASSWORD: kadr
+          POSTGRES_DB: kadr_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U kadr -d kadr_test"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+
     steps:
       - uses: actions/checkout@v4
 
@@ -41,3 +57,5 @@ jobs:
         run: pnpm test
         env:
           CI: "true"
+          # интеграционные тесты (@kadr/ledger) ходят в сервис postgres
+          TEST_DATABASE_URL: postgresql://kadr:kadr@localhost:5432/kadr_test
