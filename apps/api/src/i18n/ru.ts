@@ -18,6 +18,7 @@ export const ru = {
     RATE_LIMITED: "Слишком много запросов, попробуйте позже",
     VALIDATION_ERROR: "Некорректные данные запроса",
     INTERNAL_ERROR: "Внутренняя ошибка, мы уже разбираемся",
+    ILLEGAL_TRANSITION: "Операция уже выполнена или недопустима в текущем состоянии",
   } satisfies Record<ErrorCode, string>,
 } as const;
 

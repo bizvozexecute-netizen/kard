@@ -19,6 +19,8 @@ export const ErrorCode = {
   VALIDATION_ERROR: "VALIDATION_ERROR",
   /** Непредвиденная ошибка сервера — 500 */
   INTERNAL_ERROR: "INTERNAL_ERROR",
+  /** Операция недопустима в текущем состоянии (release после commit и т.п.) — 409 */
+  ILLEGAL_TRANSITION: "ILLEGAL_TRANSITION",
 } as const;
 
 export const errorCodeSchema = z.nativeEnum(ErrorCode);
@@ -33,3 +35,40 @@ export const apiErrorSchema = z.object({
   }),
 });
 export type ApiError = z.infer<typeof apiErrorSchema>;
+
+/**
+ * Базовый класс доменных ошибок для всех пакетов (без зависимости от Nest).
+ * Глобальный фильтр API превращает его в { error: { code, message, details } }
+ * с указанным HTTP-статусом; текст берётся из i18n по коду.
+ */
+export class AppError extends Error {
+  constructor(
+    public readonly code: ErrorCode,
+    public readonly status: number = 400,
+    public readonly details?: unknown,
+  ) {
+    super(code);
+    this.name = "AppError";
+  }
+}
+
+export class NotFoundError extends AppError {
+  constructor(details?: unknown) {
+    super(ErrorCode.NOT_FOUND, 404, details);
+    this.name = "NotFoundError";
+  }
+}
+
+export class UnauthorizedError extends AppError {
+  constructor(details?: unknown) {
+    super(ErrorCode.UNAUTHORIZED, 401, details);
+    this.name = "UnauthorizedError";
+  }
+}
+
+export class ValidationError extends AppError {
+  constructor(details?: unknown) {
+    super(ErrorCode.VALIDATION_ERROR, 400, details);
+    this.name = "ValidationError";
+  }
+}
