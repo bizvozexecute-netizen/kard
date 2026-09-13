@@ -96,6 +96,63 @@ model LedgerMismatch {
 }
 
 // ---------------------------------------------------------------------------
+// Catalog (сессия 4): операции генерации и пакеты кредитов.
+// Данные заведены сид-INSERT'ами в миграции catalog; правки — сидом/SQL до появления админки.
+// ---------------------------------------------------------------------------
+
+enum OperationKind {
+  IMAGE
+  VIDEO
+  AUDIO
+  EDIT
+  UPSCALE
+}
+
+enum OperationTier {
+  DRAFT
+  STANDARD
+  PREMIUM
+}
+
+/// Операция генерации: цена в кредитах, оценка себестоимости, цепочка провайдеров
+/// (ProviderRouter, сессия 5) и JSON-схема параметров (валидация в generations, сессия 6).
+/// cogsUsdEst и providerChain наружу не отдаются.
+model Operation {
+  key          String        @id
+  kind         OperationKind
+  tier         OperationTier
+  title        String
+  priceCredits Int           @map("price_credits")
+  cogsUsdEst   Decimal       @map("cogs_usd_est") @db.Decimal(10, 4)
+  providerChain Json         @map("provider_chain")
+  paramsSchema Json          @map("params_schema")
+  etaSec       Int           @map("eta_sec")
+  isActive     Boolean       @default(true) @map("is_active")
+  sort         Int           @default(0)
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+
+  @@index([isActive, sort])
+  @@map("operations")
+}
+
+/// Пакет кредитов. priceRub — в РУБЛЯХ целиком (в копейки переводит payments, сессия 7).
+model Package {
+  id        String   @id @default(cuid())
+  priceRub  Int      @map("price_rub")
+  credits   BigInt
+  bonusPct  Int      @default(0) @map("bonus_pct")
+  badge     String?
+  isActive  Boolean  @default(true) @map("is_active")
+  sort      Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([isActive, sort])
+  @@map("packages")
+}
+
+// ---------------------------------------------------------------------------
 // Daily claim + streak (сессия 3). Дата — календарный день UTC в формате YYYY-MM-DD.
 // ---------------------------------------------------------------------------
 
