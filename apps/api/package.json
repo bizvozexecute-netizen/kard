@@ -1,0 +1,43 @@
+{
+  "name": "@kadr/api",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Kadr API: NestJS 10, REST + SSE + вебхуки",
+  "scripts": {
+    "build": "nest build",
+    "dev": "nest start --watch",
+    "start": "node dist/main.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint src",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rm -rf dist coverage .turbo"
+  },
+  "dependencies": {
+    "@kadr/db": "workspace:*",
+    "@kadr/shared": "workspace:*",
+    "@nestjs/common": "10.4.22",
+    "@nestjs/core": "10.4.22",
+    "@nestjs/platform-express": "10.4.22",
+    "ioredis": "^5.11.1",
+    "nestjs-pino": "^4.6.1",
+    "nestjs-zod": "^4.3.1",
+    "pino": "^9.14.0",
+    "pino-http": "^10.5.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "10.4.9",
+    "@nestjs/schematics": "10.2.3",
+    "@nestjs/testing": "10.4.22",
+    "@swc/core": "^1.16.2",
+    "@types/express": "^4.17.23",
+    "@types/supertest": "^6.0.3",
+    "pino-pretty": "^13.1.3",
+    "supertest": "^7.1.4",
+    "unplugin-swc": "^1.6.0",
+    "vitest": "^3.2.7"
+  }
+}
