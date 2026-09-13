@@ -21,6 +21,8 @@ export const ErrorCode = {
   INTERNAL_ERROR: "INTERNAL_ERROR",
   /** Операция недопустима в текущем состоянии (release после commit и т.п.) — 409 */
   ILLEGAL_TRANSITION: "ILLEGAL_TRANSITION",
+  /** Ежедневный бонус за сегодня уже получен — 409 */
+  ALREADY_CLAIMED: "ALREADY_CLAIMED",
 } as const;
 
 export const errorCodeSchema = z.nativeEnum(ErrorCode);
