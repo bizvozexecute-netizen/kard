@@ -11,6 +11,7 @@ apps/worker     NestJS standalone: BullMQ-процессоры       (@kadr/work
 apps/bot        grammY-бот                                  (@kadr/bot)
 packages/shared zod-схемы, типы, коды ошибок               (@kadr/shared)
 packages/db     Prisma-схема, миграции, PrismaClient        (@kadr/db)
+packages/ledger единственная точка изменения кредитов       (@kadr/ledger)
 spike/          автономный спайк fal.ai (сессия 0), не часть workspace
 ```
 
@@ -29,15 +30,15 @@ curl localhost:3000/v1/health # {"status":"ok","checks":{"postgres":"up","redis"
 
 ## Команды
 
-| Команда                             | Что делает                                |
-| ----------------------------------- | ----------------------------------------- |
-| `pnpm dev`                          | api + worker + bot в watch-режиме (turbo) |
-| `pnpm build`                        | сборка всех пакетов в `dist/`             |
-| `pnpm test`                         | все тесты (Vitest)                        |
-| `pnpm lint` / `pnpm typecheck`      | ESLint / `tsc --noEmit` по всем пакетам   |
-| `pnpm format` / `pnpm format:check` | Prettier                                  |
-| `pnpm migrate`                      | `prisma migrate dev` в `packages/db`      |
-| `pnpm db:generate`                  | перегенерировать Prisma Client            |
+| Команда                             | Что делает                                                                                                              |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `pnpm dev`                          | api + worker + bot в watch-режиме (turbo)                                                                               |
+| `pnpm build`                        | сборка всех пакетов в `dist/`                                                                                           |
+| `pnpm test`                         | все тесты (Vitest); интеграционным (`@kadr/ledger`) нужен Postgres: `TEST_DATABASE_URL=…` или Docker для Testcontainers |
+| `pnpm lint` / `pnpm typecheck`      | ESLint / `tsc --noEmit` по всем пакетам                                                                                 |
+| `pnpm format` / `pnpm format:check` | Prettier                                                                                                                |
+| `pnpm migrate`                      | `prisma migrate dev` в `packages/db`                                                                                    |
+| `pnpm db:generate`                  | перегенерировать Prisma Client                                                                                          |
 
 Внутри пакета: `pnpm --filter @kadr/api test`, `pnpm --filter @kadr/db exec prisma studio` и т.д.
 
@@ -48,9 +49,9 @@ curl localhost:3000/v1/health # {"status":"ok","checks":{"postgres":"up","redis"
   коды — `ErrorCode` из `@kadr/shared`, тексты — `apps/api/src/i18n/ru.ts`.
 - Каждый ответ API несёт заголовок `X-Request-Id` (принимается входящий или генерируется).
 - Конфиг только из env, валидируется zod при старте; при отсутствии переменной процесс падает.
-- Миграции только через `pnpm migrate` (`prisma migrate dev`). Схема в `packages/db/prisma/schema.prisma`
-  пока пустая, поэтому первая миграция появится вместе с первыми моделями (ledger, сессия 2):
-  `pnpm migrate --name init` на пустой схеме отвечает «Already in sync».
+- Миграции только через `pnpm migrate` (`prisma migrate dev`). Исключение по ТЗ §4: CHECK-констрейнты
+  `credit_accounts` дописаны в SQL миграции `ledger`.
+- Баланс кредитов меняется только через `LedgerService` из `@kadr/ledger` (reserve/commit/release/grant/spendDirect).
 
 ## CI
 
