@@ -4,6 +4,9 @@ import { ZodValidationPipe } from "nestjs-zod";
 import { AuthModule } from "./auth/auth.module";
 import { CatalogModule } from "./catalog/catalog.module";
 import { HttpExceptionFilter } from "./common/http-exception.filter";
+import { GenerationsModule } from "./generations/generations.module";
+import { StorageModule } from "./storage/storage.module";
+import { UploadsModule } from "./uploads/uploads.module";
 import { type AppConfig } from "./config";
 import { ConfigModule } from "./config.module";
 import { HealthModule } from "./health/health.module";
@@ -32,6 +35,9 @@ export class AppModule {
         UsersModule,
         AuthModule,
         CatalogModule,
+        StorageModule,
+        GenerationsModule,
+        UploadsModule,
         HealthModule,
       ],
       providers: [

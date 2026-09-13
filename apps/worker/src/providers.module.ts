@@ -3,6 +3,9 @@ import { EnhancerService, GeminiClient, PrismaTemplateSource } from "@kadr/enhan
 import { FalProvider, ProviderRouter, RedisCircuitBreaker } from "@kadr/providers";
 import { PinoLogger } from "nestjs-pino";
 import { CONFIG, type WorkerConfig } from "./config";
+import { AlwaysOkModeration, MODERATION } from "./generations/moderation";
+import { NotifyQueue } from "./generations/notify-queue";
+import { storageProvider, STORAGE } from "./storage.provider";
 import { PrismaService } from "./prisma.service";
 import { RedisService } from "./redis.service";
 
@@ -14,6 +17,9 @@ import { RedisService } from "./redis.service";
 @Module({
   providers: [
     RedisService,
+    storageProvider,
+    { provide: MODERATION, useClass: AlwaysOkModeration },
+    NotifyQueue,
     {
       provide: FalProvider,
       useFactory: (config: WorkerConfig) => new FalProvider({ apiKey: config.FAL_KEY }),
@@ -44,6 +50,6 @@ import { RedisService } from "./redis.service";
       inject: [CONFIG, PrismaService, PinoLogger],
     },
   ],
-  exports: [ProviderRouter, EnhancerService, RedisService],
+  exports: [ProviderRouter, EnhancerService, RedisService, MODERATION, STORAGE, NotifyQueue],
 })
 export class ProvidersModule {}

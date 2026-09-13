@@ -153,6 +153,70 @@ model Package {
 }
 
 // ---------------------------------------------------------------------------
+// Generations (сессия 6): заявка на генерацию и её жизненный цикл.
+// kind — OperationKind (ТЗ называет его GenKind, значения совпадают; отдельный enum
+// дублировал бы тип — правило 2).
+// ---------------------------------------------------------------------------
+
+enum GenStatus {
+  QUEUED
+  MODERATING
+  ENHANCING
+  RUNNING
+  SUCCEEDED
+  FAILED
+  CANCELED
+}
+
+model Generation {
+  id             String        @id @default(cuid())
+  userId         String        @map("user_id")
+  operationKey   String        @map("operation_key")
+  kind           OperationKind
+  status         GenStatus     @default(QUEUED)
+  promptRaw      String?       @map("prompt_raw")
+  promptFinal    String?       @map("prompt_final")
+  negativePrompt String?       @map("negative_prompt")
+  presetId       String?       @map("preset_id")
+  presetInputs   Json?         @map("preset_inputs")
+  inputImageKey  String?       @map("input_image_key")
+  params         Json
+  variants       Int           @default(1)
+  costCredits    Int           @map("cost_credits")
+  costUsdActual  Decimal?      @map("cost_usd_actual") @db.Decimal(10, 4)
+  provider       String?
+  model          String?
+  providerJobId  String?       @map("provider_job_id")
+  resultKeys     String[]      @map("result_keys")
+  errorCode      String?       @map("error_code")
+  parentId       String?       @map("parent_id")
+  idempotencyKey String        @unique @map("idempotency_key")
+  deletedAt      DateTime?     @map("deleted_at")
+  createdAt      DateTime      @default(now()) @map("created_at")
+  startedAt      DateTime?     @map("started_at")
+  finishedAt     DateTime?     @map("finished_at")
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([status])
+  @@map("generations")
+}
+
+/// Загруженные пользователями изображения (input для image_edit/upscale).
+model Upload {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  key       String
+  mime      String
+  width     Int
+  height    Int
+  sizeBytes Int      @map("size_bytes")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("uploads")
+}
+
+// ---------------------------------------------------------------------------
 // Prompt templates (сессия 5): версионируемые системные промпты для LLM
 // (enhancer, позже модерация). Активная версия — максимальная с isActive.
 // ---------------------------------------------------------------------------

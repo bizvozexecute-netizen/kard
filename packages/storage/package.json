@@ -1,0 +1,32 @@
+{
+  "name": "@kadr/storage",
+  "version": "0.0.1",
+  "private": true,
+  "description": "S3-совместимое хранилище: put, подписанные URL, lifecycle-правила",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint src test",
+    "test": "vitest run",
+    "clean": "rm -rf dist coverage .turbo"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1131.0",
+    "@aws-sdk/s3-request-presigner": "^3.1131.0"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.7"
+  }
+}

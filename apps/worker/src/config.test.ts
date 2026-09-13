@@ -6,6 +6,10 @@ const base = {
   REDIS_URL: "redis://localhost:6379",
   FAL_KEY: "fal-test",
   GEMINI_KEY: "gemini-test",
+  S3_ENDPOINT: "http://localhost:9000",
+  S3_ACCESS_KEY: "minioadmin",
+  S3_SECRET_KEY: "minioadmin",
+  S3_BUCKET: "kadr",
 };
 
 describe("worker loadConfig", () => {
@@ -30,6 +34,10 @@ describe("worker loadConfig", () => {
         "REDIS_URL: is required",
         "FAL_KEY: is required",
         "GEMINI_KEY: is required",
+        "S3_ENDPOINT: is required",
+        "S3_ACCESS_KEY: is required",
+        "S3_SECRET_KEY: is required",
+        "S3_BUCKET: is required",
       ]);
     }
   });
