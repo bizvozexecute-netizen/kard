@@ -301,7 +301,9 @@ describe("аргументы", () => {
 
 describe("ensureAccount / getBalance", () => {
   it("создаёт пустой счёт один раз", async () => {
-    const user = await prisma().user.create({ data: { telegramId: 42n } });
+    const user = await prisma().user.create({
+      data: { telegramId: 42n, referralCode: "ENSURE01" },
+    });
     await expect(ledger().getBalance(user.id)).rejects.toBeInstanceOf(AccountNotFoundError);
     await ledger().ensureAccount(user.id);
     await ledger().ensureAccount(user.id);

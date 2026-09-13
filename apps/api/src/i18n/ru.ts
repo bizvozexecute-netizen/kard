@@ -19,6 +19,7 @@ export const ru = {
     VALIDATION_ERROR: "Некорректные данные запроса",
     INTERNAL_ERROR: "Внутренняя ошибка, мы уже разбираемся",
     ILLEGAL_TRANSITION: "Операция уже выполнена или недопустима в текущем состоянии",
+    ALREADY_CLAIMED: "Ежедневный бонус за сегодня уже получен, возвращайтесь завтра",
   } satisfies Record<ErrorCode, string>,
 } as const;
 

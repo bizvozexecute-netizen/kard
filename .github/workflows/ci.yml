@@ -29,6 +29,15 @@ jobs:
           --health-interval 5s
           --health-timeout 3s
           --health-retries 10
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
 
     steps:
       - uses: actions/checkout@v4
@@ -59,3 +68,4 @@ jobs:
           CI: "true"
           # интеграционные тесты (@kadr/ledger) ходят в сервис postgres
           TEST_DATABASE_URL: postgresql://kadr:kadr@localhost:5432/kadr_test
+          TEST_REDIS_URL: redis://localhost:6379/1
