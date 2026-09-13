@@ -1,8 +1,8 @@
 {
-  "name": "@kadr/ledger",
+  "name": "@kadr/test-utils",
   "version": "0.0.1",
   "private": true,
-  "description": "Единственная точка изменения баланса кредитов: reserve/commit/release/grant/spendDirect",
+  "description": "Общая инфраструктура интеграционных тестов: Postgres/Redis из env или Testcontainers",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -18,19 +18,15 @@
     "build": "tsc -p tsconfig.build.json",
     "dev": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "lint": "eslint src test",
-    "test": "vitest run --coverage",
-    "test:watch": "vitest",
+    "lint": "eslint src",
+    "test": "vitest run --passWithNoTests",
     "clean": "rm -rf dist coverage .turbo"
   },
   "dependencies": {
-    "@kadr/db": "workspace:*",
-    "@kadr/shared": "workspace:*"
+    "@testcontainers/postgresql": "^10.28.0",
+    "@testcontainers/redis": "^10.28.0"
   },
   "devDependencies": {
-    "@kadr/test-utils": "workspace:*",
-    "@vitest/coverage-v8": "^3.2.7",
-    "fast-check": "^4.10.0",
     "vitest": "^3.2.7"
   }
 }

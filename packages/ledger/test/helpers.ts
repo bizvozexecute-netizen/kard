@@ -32,7 +32,7 @@ let seq = 0;
 export async function createUser(balance: bigint = 0n, reserved: bigint = 0n): Promise<string> {
   seq += 1;
   const user = await prisma().user.create({
-    data: { telegramId: BigInt(1_000_000 + seq), firstName: `u${seq}` },
+    data: { telegramId: BigInt(1_000_000 + seq), firstName: `u${seq}`, referralCode: `T${seq}` },
   });
   await prisma().$executeRaw`
     INSERT INTO "credit_accounts" ("user_id", "balance", "reserved", "updated_at")
