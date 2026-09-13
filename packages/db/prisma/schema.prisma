@@ -12,20 +12,30 @@ datasource db {
 }
 
 // ---------------------------------------------------------------------------
-// Users (сессия 3 расширит), CreditAccount + Ledger (сессия 2)
+// Users (сессия 3), CreditAccount + Ledger (сессия 2)
 // ---------------------------------------------------------------------------
 
 model User {
-  id         String    @id @default(cuid())
-  telegramId BigInt    @unique @map("telegram_id")
-  firstName  String?   @map("first_name")
-  username   String?
-  email      String?
-  referredBy String?   @map("referred_by")
-  bannedAt   DateTime? @map("banned_at")
-  createdAt  DateTime  @default(now()) @map("created_at")
+  id                   String    @id @default(cuid())
+  telegramId           BigInt    @unique @map("telegram_id")
+  firstName            String?   @map("first_name")
+  lastName             String?   @map("last_name")
+  username             String?
+  avatarUrl            String?   @map("avatar_url")
+  languageCode         String?   @map("language_code")
+  email                String?
+  notificationsEnabled Boolean   @default(true) @map("notifications_enabled")
+  /// Короткий код для реферальных ссылок (8 символов base58)
+  referralCode         String    @unique @map("referral_code")
+  /// id пригласившего пользователя (из start_param ref_<code> при регистрации)
+  referredBy           String?   @map("referred_by")
+  signupBonusGrantedAt DateTime? @map("signup_bonus_granted_at")
+  lastLoginAt          DateTime? @map("last_login_at")
+  bannedAt             DateTime? @map("banned_at")
+  createdAt            DateTime  @default(now()) @map("created_at")
 
   account CreditAccount?
+  streak  Streak?
 
   @@map("users")
 }
@@ -83,4 +93,29 @@ model LedgerMismatch {
 
   @@index([userId, detectedAt(sort: Desc)])
   @@map("ledger_mismatches")
+}
+
+// ---------------------------------------------------------------------------
+// Daily claim + streak (сессия 3). Дата — календарный день UTC в формате YYYY-MM-DD.
+// ---------------------------------------------------------------------------
+
+model DailyClaim {
+  userId    String   @map("user_id")
+  date      String   @db.VarChar(10)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@id([userId, date])
+  @@map("daily_claims")
+}
+
+model Streak {
+  userId        String   @id @map("user_id")
+  current       Int      @default(0)
+  best          Int      @default(0)
+  lastClaimDate String?  @map("last_claim_date") @db.VarChar(10)
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("streaks")
 }
