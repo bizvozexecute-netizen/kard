@@ -1,0 +1,15 @@
+# deps / build
+node_modules/
+dist/
+coverage/
+.turbo/
+*.tsbuildinfo
+
+# env
+.env
+.env.*
+!.env.example
+
+# logs / os
+*.log
+.DS_Store
