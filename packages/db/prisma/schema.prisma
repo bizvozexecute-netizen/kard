@@ -1,5 +1,6 @@
-// Prisma-схема Kadr. Модели добавляются по сессиям ТЗ (ledger — сессия 2, auth — 3, ...).
-// Миграции — только через `pnpm migrate` (prisma migrate dev). Руками SQL не править.
+// Prisma-схема Kadr. Модели добавляются по сессиям ТЗ.
+// Миграции — только через `pnpm migrate` (prisma migrate dev). Руками SQL не править
+// (исключение по ТЗ §4: CHECK-констрейнты credit_accounts дописаны в SQL миграции).
 
 generator client {
   provider = "prisma-client-js"
@@ -8,4 +9,78 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Users (сессия 3 расширит), CreditAccount + Ledger (сессия 2)
+// ---------------------------------------------------------------------------
+
+model User {
+  id         String    @id @default(cuid())
+  telegramId BigInt    @unique @map("telegram_id")
+  firstName  String?   @map("first_name")
+  username   String?
+  email      String?
+  referredBy String?   @map("referred_by")
+  bannedAt   DateTime? @map("banned_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  account CreditAccount?
+
+  @@map("users")
+}
+
+/// Баланс кредитов. Менять ТОЛЬКО через LedgerService (@kadr/ledger).
+/// CHECK (balance >= 0), CHECK (reserved >= 0) — в SQL миграции.
+model CreditAccount {
+  userId    String   @id @map("user_id")
+  balance   BigInt   @default(0)
+  reserved  BigInt   @default(0)
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("credit_accounts")
+}
+
+enum LedgerType {
+  PURCHASE
+  SPEND
+  REFUND
+  BONUS
+  DAILY
+  REFERRAL
+  MANUAL
+}
+
+/// Журнал движений. delta со знаком; резерв записи не создаёт, release пишет delta=0.
+/// Инвариант: SUM(delta) по пользователю == balance + reserved.
+model LedgerEntry {
+  id             String     @id @default(cuid())
+  userId         String     @map("user_id")
+  delta          BigInt
+  type           LedgerType
+  refType        String?    @map("ref_type")
+  refId          String?    @map("ref_id")
+  balanceAfter   BigInt     @map("balance_after")
+  idempotencyKey String?    @unique @map("idempotency_key")
+  comment        String?
+  createdAt      DateTime   @default(now()) @map("created_at")
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([refType, refId])
+  @@map("ledger_entries")
+}
+
+/// Расхождения, найденные cron-сверкой (worker, раз в час).
+model LedgerMismatch {
+  id         String   @id @default(cuid())
+  userId     String   @map("user_id")
+  expected   BigInt
+  balance    BigInt
+  reserved   BigInt
+  detectedAt DateTime @default(now()) @map("detected_at")
+
+  @@index([userId, detectedAt(sort: Desc)])
+  @@map("ledger_mismatches")
 }
