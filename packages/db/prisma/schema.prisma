@@ -153,6 +153,24 @@ model Package {
 }
 
 // ---------------------------------------------------------------------------
+// Prompt templates (сессия 5): версионируемые системные промпты для LLM
+// (enhancer, позже модерация). Активная версия — максимальная с isActive.
+// ---------------------------------------------------------------------------
+
+model PromptTemplate {
+  id        String   @id @default(cuid())
+  key       String
+  version   Int
+  body      String   @db.Text
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([key, version])
+  @@index([key, isActive])
+  @@map("prompt_templates")
+}
+
+// ---------------------------------------------------------------------------
 // Daily claim + streak (сессия 3). Дата — календарный день UTC в формате YYYY-MM-DD.
 // ---------------------------------------------------------------------------
 
