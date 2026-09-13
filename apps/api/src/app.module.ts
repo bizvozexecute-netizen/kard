@@ -2,6 +2,7 @@ import { type DynamicModule, Module } from "@nestjs/common";
 import { APP_FILTER, APP_PIPE } from "@nestjs/core";
 import { ZodValidationPipe } from "nestjs-zod";
 import { AuthModule } from "./auth/auth.module";
+import { CatalogModule } from "./catalog/catalog.module";
 import { HttpExceptionFilter } from "./common/http-exception.filter";
 import { type AppConfig } from "./config";
 import { ConfigModule } from "./config.module";
@@ -30,6 +31,7 @@ export class AppModule {
         LedgerModule,
         UsersModule,
         AuthModule,
+        CatalogModule,
         HealthModule,
       ],
       providers: [
