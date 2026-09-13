@@ -1,4 +1,5 @@
 export * from "./auth";
+export * from "./catalog";
 export * from "./errors";
 export * from "./ledger";
 export * from "./queues";
