@@ -1,0 +1,31 @@
+{
+  "name": "@kadr/shared",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Единственный источник DTO: zod-схемы, типы, enum'ы, коды ошибок",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint src",
+    "test": "vitest run",
+    "clean": "rm -rf dist coverage .turbo"
+  },
+  "dependencies": {
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.7"
+  }
+}

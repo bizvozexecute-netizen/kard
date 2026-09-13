@@ -1,0 +1,11 @@
+// Prisma-схема Kadr. Модели добавляются по сессиям ТЗ (ledger — сессия 2, auth — 3, ...).
+// Миграции — только через `pnpm migrate` (prisma migrate dev). Руками SQL не править.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}

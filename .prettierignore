@@ -1,0 +1,9 @@
+dist
+coverage
+node_modules
+.turbo
+pnpm-lock.yaml
+spike/
+packages/db/prisma/migrations
+kadr-claude-code-tz.md
+CLAUDE.md
