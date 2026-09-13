@@ -1,0 +1,35 @@
+{
+  "name": "@kadr/enhancer",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Обогащение промпта через Gemini Flash: адаптер, шаблоны из prompt_templates",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint src test",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rm -rf dist coverage .turbo"
+  },
+  "dependencies": {
+    "@kadr/db": "workspace:*",
+    "@kadr/shared": "workspace:*",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@kadr/test-utils": "workspace:*",
+    "vitest": "^3.2.7"
+  }
+}
