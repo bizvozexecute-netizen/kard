@@ -9,6 +9,10 @@ export const envSchema = z.object({
   FAL_KEY: z.string().min(1),
   GEMINI_KEY: z.string().min(1),
   GEMINI_MODEL: z.string().min(1).default("gemini-2.5-flash"),
+  S3_ENDPOINT: z.string().url(),
+  S3_ACCESS_KEY: z.string().min(1),
+  S3_SECRET_KEY: z.string().min(1),
+  S3_BUCKET: z.string().min(1),
   /** Параллелизм процессора очереди generation */
   WORKER_CONCURRENCY: z.coerce.number().int().min(1).max(64).default(4),
   /** Период cron-сверки ledger, мс (по умолчанию час) */
